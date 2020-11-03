@@ -86,10 +86,10 @@ type StatementItem struct {
 func (si StatementItem) ComposeMessage() string {
 	buf := bytes.Buffer{}
 
-	Kiev, _ := time.LoadLocation("Europe/Kiev")
+	kiev, _ := time.LoadLocation("Europe/Kiev")
 
 	cur := "UAH"
-	buf.WriteString(time.Unix(si.Time, 0).In(Kiev).Format("02/01/2006 15:04") + "\n")
+	buf.WriteString(time.Unix(si.Time, 0).In(kiev).Format("02/01/2006 15:04") + "\n")
 	buf.WriteString(si.Description + "\n")
 	if si.Comment != "" {
 		buf.WriteString(si.Comment + "\n")

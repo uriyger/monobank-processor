@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -51,10 +52,15 @@ func processBody(body []byte) error {
 		return err
 	}
 
+	chatID, aErr := strconv.Atoi(os.Getenv("CHAT_ID"))
+	if aErr != nil {
+		return aErr
+	}
+
 	mesW := struct {
 		ChatID int    `json:"chat_id"`
 		Text   string `json:"text"`
-	}{314959650, si.Data.StatementItem.ComposeMessage()}
+	}{chatID, si.Data.StatementItem.ComposeMessage()}
 
 	p, _ := json.Marshal(mesW)
 	fmt.Println(string(p))
@@ -64,7 +70,7 @@ func processBody(body []byte) error {
 		return fmt.Errorf("GET: %s Error:%s", os.Getenv("SEND_MESSAGE_API"), err.Error())
 	}
 
-	fmt.Println("Rsponse status: ", resp.StatusCode)
+	fmt.Println("Response status: ", resp.StatusCode)
 	return nil
 }
 

@@ -7,8 +7,8 @@ DANGLING_IMAGES = $(shell docker images -q -f "dangling=true")
 build:
 	GOOS=linux go build -o app_linux cmd/main.go
 	docker build -t ${REGISTRY_IMAGE}:latest .
-# Cleanup dangling images
 
+# Cleanup dangling images
 ifneq ($(DANGLING_IMAGES),)
 	docker rmi -f $(DANGLING_IMAGES)
 endif

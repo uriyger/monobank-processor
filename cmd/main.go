@@ -35,9 +35,11 @@ func httpLog(writer http.ResponseWriter, request *http.Request) {
 
 	if err := processBody(body); err != nil {
 		fmt.Println(err)
+		writer.Write([]byte("err: " + err.Error()))
 	}
 
 	writer.Write([]byte("Ok time: " + time.Now().UTC().Format("2006-01-02 15:04:05.999")))
+
 }
 
 func processBody(body []byte) error {

@@ -7,7 +7,6 @@ RUN mkdir -p /app && \
 
 COPY app_linux /app/app
 RUN apk add libcap && \
-    apk --no-cache add tzdata && \
     setcap 'cap_net_bind_service=+ep' /app/app
 
 EXPOSE ${HTTP_PORT}

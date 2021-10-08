@@ -8,7 +8,6 @@ import (
 	"monobank-processor/config"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -52,13 +51,10 @@ func processBody(body []byte) error {
 		return err
 	}
 
-	chatID, aErr := strconv.Atoi(os.Getenv("CHAT_ID"))
-	if aErr != nil {
-		return aErr
-	}
+	chatID := os.Getenv("CHAT_ID")
 
 	mesW := struct {
-		ChatID int    `json:"chat_id"`
+		ChatID string `json:"chat_id"`
 		Text   string `json:"text"`
 	}{chatID, si.Data.StatementItem.ComposeMessage()}
 

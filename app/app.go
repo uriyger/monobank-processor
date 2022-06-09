@@ -3,7 +3,6 @@ package app
 import (
 	"errors"
 	"fmt"
-	"monobank-processor/config"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,14 +11,16 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	apphttp "monobank-processor/app/http"
+	"monobank-processor/config"
+	phttp "monobank-processor/http"
+	"monobank-processor/processor"
 )
 
 type App struct {
 	logger  *zap.Logger
 	config  *config.Config
 	router  *mux.Router
-	handler *apphttp.Handler
+	handler *phttp.Handler
 }
 
 func (a *App) Init() error {
@@ -86,7 +87,8 @@ func (a *App) initConfig() error {
 }
 
 func (a *App) initHTTPHandler() error {
-	a.handler = apphttp.NewHandler(a.config)
+	p := processor.NewProcessor(a.config)
+	a.handler = phttp.NewHandler(a.config, a.logger, p)
 	return nil
 }
 
@@ -94,7 +96,7 @@ func (a *App) initRouter() error {
 	if a.handler == nil {
 		return errors.New("router initialization: handler is not initialized")
 	}
-	a.router = apphttp.NewRouter(a.handler)
+	a.router = phttp.NewRouter(a.handler)
 
 	return nil
 }

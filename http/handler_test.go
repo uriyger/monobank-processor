@@ -2,27 +2,21 @@ package http
 
 import (
 	"bytes"
-	"monobank-processor/config"
+	"monobank-processor/processor"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 	"gopkg.in/h2non/gock.v1"
+
+	"monobank-processor/config"
 )
 
-func initHandler() http.Handler {
-
-	c := &config.Config{
-		ChatID:         "chat_id",
-		HTTPPort:       80,
-		SendMessageURL: "http://telegram/sendMes",
-	}
-	h := NewHandler(c)
-	os.Setenv("SEND_MESSAGE_API", c.SendMessageURL)
+func initHandler(c *config.Config, p processor.Processor) http.Handler {
+	h := NewHandler(c, zap.NewNop(), p)
 	return NewRouter(h)
-
 }
 
 func initTestReqBody() []byte {
@@ -51,7 +45,9 @@ func initTestReqBody() []byte {
 
 func TestHandler_ProcessStatement(t *testing.T) {
 
-	h := initHandler()
+	cfg := &config.Config{}
+
+	h := initHandler(cfg, nil)
 	server := httptest.NewServer(h)
 	host := server.URL
 	defer server.Close()
